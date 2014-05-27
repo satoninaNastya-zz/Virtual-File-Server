@@ -12,7 +12,6 @@ public class VirtualFileSystem {
     private final static String ERROR_DELETE_CURRENT_DIRECTORY = "Error, you can not remove current directory";
     private final static String ERROR_THIS_USER = "Error, in this directory are users ";
 
-
     public VirtualFileSystem(String rootDirectoryName, ArrayList<ClientThread> listClientOnline) {
         this.rootDirectory = new Directory(rootDirectoryName);
         clientsThreads = listClientOnline;
@@ -68,13 +67,12 @@ public class VirtualFileSystem {
 
         String[] pathDirectory = path.split(PATH_DEL);
         int pathLength = pathDirectory.length - 1;
-
         if (!pathDirectory[0].equals("C:") && pathLength == 0)
             return currentDirectory;
 
         return getDirectory(pathDirectory, pathLength);
     }
-//возвращает коннечную дирректорию из пути либо текущую директорию пользователя
+//возвращает коннечную дирректорию из пути, либо текущую директорию пользователя
     public Directory getDirectoryFromPath(String path, Directory currentDirectory) {
         String[] pathDirectory = path.split(PATH_DEL);
         int pathLength = pathDirectory.length;
