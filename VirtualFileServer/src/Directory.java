@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-
 public class Directory {
     private String name;
 
@@ -62,7 +61,6 @@ public class Directory {
     public String getNameFile(int i) {
         return containsFile.get(i).getName();
     }
-
 
     public Directory getDirectory(int i) {
         return containsDirectory.get(i);
@@ -127,10 +125,7 @@ public class Directory {
             for (int i = 0; i < directory.getNumberContainsDirectory(); i++)
                 sortDirectory(directory.getDirectory(i));
         }
-
     }
-
-
 }
 
 

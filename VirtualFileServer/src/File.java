@@ -4,13 +4,16 @@ public class File {
     private String name;
     private ArrayList<Lock> locks = new ArrayList<Lock>();
 
-
     public File(String name) {
         this.name = name;
     }
 
     public String getName() {
         return name;
+    }
+
+    public void cleanLock() {
+        locks.clear();
     }
 
     public boolean lockFile(String userName) {
@@ -32,10 +35,6 @@ public class File {
             }
         }
         return false;
-    }
-
-    public void cleanLock() {
-        locks.clear();
     }
 
     public boolean isEmptyLocks() {
