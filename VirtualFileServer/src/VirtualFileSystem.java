@@ -35,6 +35,10 @@ public class VirtualFileSystem {
 
     public int getNumberClientOnline() {
         return users.size();
+}
+
+    public void clear(){
+        rootDirectory.clear();
     }
 
 //пользователь с таким именем уже существует

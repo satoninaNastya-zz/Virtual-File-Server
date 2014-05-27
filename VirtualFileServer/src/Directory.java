@@ -1,9 +1,6 @@
-import com.sun.javafx.geom.DirtyRegionContainer;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Objects;
 
 
 public class Directory {
@@ -45,7 +42,10 @@ public class Directory {
         return usersThisNow.isEmpty();
     }
 
-
+    public void clear() {
+        containsDirectory.clear();
+        containsFile.clear();
+    }
 
     public Directory(String name) {
         this.name = name;
@@ -64,7 +64,6 @@ public class Directory {
     }
 
 
-
     public Directory getDirectory(int i) {
         return containsDirectory.get(i);
     }
@@ -74,11 +73,9 @@ public class Directory {
     }
 
 
-
     public void newDirectory(Directory dir) {
         containsDirectory.add(dir);
     }
-
 
 
     public void newFile(File newFile) {
@@ -109,13 +106,8 @@ public class Directory {
         return containsFile.size();
     }
 
-
     public boolean isFileNotLock(int i) {
         return containsFile.get(i).isEmptyLocks();
-    }
-
-    public void clearLockFile(int i) {
-        containsFile.get(i).cleanLock();
     }
 
     public int getNumberFileLocks(int i) {
@@ -134,24 +126,9 @@ public class Directory {
         if (!directory.isNotContainsDirectory()) {
             for (int i = 0; i < directory.getNumberContainsDirectory(); i++)
                 sortDirectory(directory.getDirectory(i));
-        } else return;
+        }
+
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

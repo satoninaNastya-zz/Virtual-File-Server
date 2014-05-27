@@ -14,8 +14,8 @@ public class File {
     }
 
     public boolean lockFile(String userName) {
-        for (int i = 0; i < locks.size(); i++)
-            if (locks.get(i).getLockUserName().equals(userName)) {
+        for (Lock lock : locks)
+            if (lock.getLockUserName().equals(userName)) {
                 return false;
             }
 
@@ -39,9 +39,7 @@ public class File {
     }
 
     public boolean isEmptyLocks() {
-        if (locks.isEmpty())
-            return true;
-        else return false;
+        return locks.isEmpty();
     }
 
     public int getLocksSize() {
