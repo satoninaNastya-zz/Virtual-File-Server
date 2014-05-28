@@ -9,8 +9,8 @@ public class ClientThread extends Thread {
     private ObjectInputStream inputStream;
     private VirtualFileSystem theVirtualFileSystem;
     private User newUser;
-    CommandExecuteAndSendResponseClient commandExecuteAndSendResponseClient;
-    QuiteUserCommand quit = new QuiteUserCommand();
+    private CommandExecuteAndSendResponseClient commandExecuteAndSendResponseClient;
+    private QuiteUserCommand quit = new QuiteUserCommand();
 
     public User getUser() {
         return newUser;
