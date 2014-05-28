@@ -7,7 +7,7 @@ public class ClientThread extends Thread {
     private Socket socket;
     private PrintWriter outputStreamSocket;
     private ObjectInputStream inputStream;
-    private VirtualFileSystem theVirtualFileSystem;
+    private final VirtualFileSystem theVirtualFileSystem;
     private User newUser;
     private CommandExecuteAndSendResponseClient commandExecuteAndSendResponseClient;
     private QuiteUserCommand quit = new QuiteUserCommand();
@@ -48,7 +48,10 @@ public class ClientThread extends Thread {
                         commandExecuteAndSendResponseClient.execute(newCommand);
                     }
                 } catch (ClassNotFoundException e) {
+                    System.err.println("Receiving a command error");
                     e.printStackTrace();
+                    break;
+
                 }
             }
         } catch (IOException e) {

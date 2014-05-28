@@ -1,8 +1,6 @@
 import java.io.Serializable;
 
-/**
- * Created by satonina on 26.05.2014.
- */
+
 public class DELCommand implements Command, Serializable {
     private String path;
 
