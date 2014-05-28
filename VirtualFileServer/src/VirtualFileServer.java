@@ -9,7 +9,7 @@ public class VirtualFileServer {
     private static ArrayList<ClientThread> listClient = new ArrayList<ClientThread>();
     private static VirtualFileSystem virtualFileSystem = new VirtualFileSystem("C:", listClient);
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
         ServerSocket serverSocket;
         serverSocket = null;
@@ -23,21 +23,29 @@ public class VirtualFileServer {
             try {
                 serverSocket = new ServerSocket(port);
             } catch (IOException io) {
-                System.err.println("Error, server did not start");
+                System.err.println("Error, server did not start, port already use");
                 return;
             }
             System.out.println("Server run");
 
             while (true) {
-                Socket socket = serverSocket.accept();
-                ClientThread client = new ClientThread(socket, virtualFileSystem);
-                listClient.add(client);
+                try {
+                    Socket socket = serverSocket.accept();
+                    ClientThread client = new ClientThread(socket, virtualFileSystem);
+                    listClient.add(client);
+                } catch (IOException io) {
+                    System.err.println("Error, server stop");
+                    break;
+                }
             }
 
         } finally {
             if (serverSocket != null)
-                serverSocket.close();
-
+                try {
+                    serverSocket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
         }
     }
 
