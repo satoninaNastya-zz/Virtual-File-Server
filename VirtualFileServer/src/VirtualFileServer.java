@@ -16,28 +16,24 @@ public class VirtualFileServer {
         try {
             int port = gerPortFromFile("config.properties");
             if (port == -1) {
-                System.out.println("Error config file");
+                System.err.println("Error config file");
                 return;
             }
 
             try {
                 serverSocket = new ServerSocket(port);
-            } catch (IOException e) {
-                System.out.println("Error server did not start");
+            } catch (IOException io) {
+                System.err.println("Error, server did not start");
+                return;
             }
             System.out.println("Server run");
 
-            while (true) try {
-                assert serverSocket != null;
+            while (true) {
                 Socket socket = serverSocket.accept();
                 ClientThread client = new ClientThread(socket, virtualFileSystem);
                 listClient.add(client);
-
-            } catch (NullPointerException e) {
-                System.out.println("Error");
-                break;
-
             }
+
         } finally {
             if (serverSocket != null)
                 serverSocket.close();
