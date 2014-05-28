@@ -22,6 +22,9 @@ public class VirtualFileSystem {
     public void removeClientThread(ClientThread client){
         clientsThreads.remove(client);
     }
+    public void addClientThread(ClientThread client){
+        clientsThreads.add(client);
+    }
 
     public Directory getRootDirectory() {
         return rootDirectory;
