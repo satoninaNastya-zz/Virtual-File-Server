@@ -4,31 +4,18 @@ public class ConnectCommand implements Command, Serializable {
     private User user;
     private String address;
     private int port;
-    private boolean isCorrect = true;
+
 
 
     public ConnectCommand(String addressServer, String userName) {
         this.user = new User(userName);
-        try {
-            if ("localhost".equals(addressServer)) {
-                this.address = "127.0.0.1";
-                this.port = 1255;
-
-            } else {
-                String[] address = addressServer.split(":");
-                if ("127.0.0.1".equals(address[0]) && "1255".equals(address[1])) {
-                    this.address = "127.0.0.1";
-                    this.port = 1255;
-                } else isCorrect = false;
-            }
-        } catch (Exception e) {
-            isCorrect = false;
-        }
+        String[] address = addressServer.split(":");
+        if(address.length==2){
+        this.address=address[0];
+        this.port=Integer.parseInt(address[1]);}
     }
 
-    public boolean isCorrect() {
-        return isCorrect;
-    }
+
 
     @Override
     public Response execute(VirtualFileSystem virtualFileSystem, ClientThread clientThread) {
