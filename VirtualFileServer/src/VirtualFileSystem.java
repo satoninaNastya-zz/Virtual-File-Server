@@ -5,7 +5,7 @@ public class VirtualFileSystem {
 
     private Directory rootDirectory;
     private static ArrayList<ClientThread> clientsThreads;
-    private static ArrayList<User> users = new ArrayList<User>();
+    private static final ArrayList<User> users = new ArrayList<User>();
     private final static String PATH_DEL = "\\\\";
     private final static String ERROR_PATH = "Error, incorrect path";
     private final static String ERROR_DELETE_DISK_C = "Error, you can not remove disk C";
@@ -22,9 +22,7 @@ public class VirtualFileSystem {
     public void removeClientThread(ClientThread client){
         clientsThreads.remove(client);
     }
-    public void addClientThread(ClientThread client){
-        clientsThreads.add(client);
-    }
+
 
     public Directory getRootDirectory() {
         return rootDirectory;
@@ -184,7 +182,8 @@ public class VirtualFileSystem {
                 return true;
 
         for (int i = 0; i < directory.getNumberContainsDirectory(); i++)
-            return isContainsLockedFile(directory.getDirectory(i));
+            if(isContainsLockedFile(directory.getDirectory(i)))
+                return true;
 
         return false;
     }
