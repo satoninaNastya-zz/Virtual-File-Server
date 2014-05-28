@@ -9,8 +9,8 @@ public class CommandExecuteAndSendResponseClient {
     }
 
     public void execute(Command command) {
-            Response responseClient = command.execute(theVirtualFileSystem, theClientThread);
-        if(responseClient!=null)
+        Response responseClient = command.execute(theVirtualFileSystem, theClientThread);
+        if (responseClient != null)
             responseClient.send();
     }
 }

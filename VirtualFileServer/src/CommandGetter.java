@@ -4,7 +4,7 @@ public class CommandGetter {
     public Command getCommand(String command) {
         try {
             String words[] = command.split(" ");
-            if (words.length==1)
+            if (words.length == 1)
                 if (words[0].compareToIgnoreCase("print") == 0)
                     return new PrintCommand();
 
@@ -22,7 +22,7 @@ public class CommandGetter {
                     return new DelTreeCommand(words[1]);
 
                 if (words[0].compareToIgnoreCase("mf") == 0)
-                       return new MFCommand(words[1]);
+                    return new MFCommand(words[1]);
 
                 if (words[0].compareToIgnoreCase("del") == 0)
                     return new DELCommand(words[1]);
@@ -32,17 +32,15 @@ public class CommandGetter {
 
                 if (words[0].compareToIgnoreCase("unlock") == 0)
                     return new UnLockCommand(words[1]);
-
-                }
+            }
 
             if (words.length == 3) {
 
                 if (words[0].compareToIgnoreCase("copy") == 0) {
-                    return new CopyCommand(words[1],words[2]);
-
+                    return new CopyCommand(words[1], words[2]);
                 }
                 if (words[0].compareToIgnoreCase("move") == 0) {
-                    return new MoveCommand(words[1],words[2]);
+                    return new MoveCommand(words[1], words[2]);
                 }
             }
             return null;
