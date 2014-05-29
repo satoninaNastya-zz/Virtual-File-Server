@@ -1,7 +1,8 @@
 import java.util.ArrayList;
+
 public class ChangeSystemResponse implements Response {
     private String changeString;
-    private ArrayList<ClientThread> clientsThreadsOnline;
+    private final ArrayList<ClientThread> clientsThreadsOnline;
     private ClientThread userThread;
     private User userChange;
 
