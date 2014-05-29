@@ -57,7 +57,7 @@ public class Client {
         BufferedReader inputServer;
         String response;
 
-        while (true) {
+
             try {
                 connectString = keyboardReader.readLine();
             } catch (IOException io) {
@@ -106,7 +106,7 @@ public class Client {
                 return false;
             }
             return false;
-        }
+
     }
 
 }
