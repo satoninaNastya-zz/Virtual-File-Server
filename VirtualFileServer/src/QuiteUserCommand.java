@@ -7,8 +7,9 @@ public class QuiteUserCommand implements Command, Serializable {
 
     @Override
     public Response execute(VirtualFileSystem virtualFileSystem, ClientThread clientThread) {
-        if (clientThread.getUser() == null)
+        if (clientThread.getUser() == null) {
             return new ErrorResponse(clientThread, ERROR_NOT_CONNECT);
+        }
         virtualFileSystem.removeUser(clientThread.getUser());
         virtualFileSystem.removeClientThread(clientThread);
         clientThread.setUser(null);

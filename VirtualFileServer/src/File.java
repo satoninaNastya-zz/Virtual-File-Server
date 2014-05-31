@@ -17,10 +17,11 @@ public class File {
     }
 
     public boolean lockFile(String userName) {
-        for (Lock lock : locks)
+        for (Lock lock : locks) {
             if (lock.getLockUserName().equals(userName)) {
                 return false;
             }
+        }
 
         Lock newLock = new Lock(userName);
         locks.add(newLock);

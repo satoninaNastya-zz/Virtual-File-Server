@@ -44,16 +44,18 @@ public class VirtualFileSystem {
 //пользователь с таким именем уже существует
     private boolean isExistUserWithName(String userName) {
         for (User anUsersOnline : users) {
-            if (anUsersOnline.getName().equals(userName))
+            if (anUsersOnline.getName().equals(userName)) {
                 return true;
+            }
         }
         return false;
     }
 
     public boolean addNewUser(User newUser) {
         synchronized (users) {
-            if (isExistUserWithName(newUser.getName()))
+            if (isExistUserWithName(newUser.getName())) {
                 return false;
+            }
             rootDirectory.userEnter(newUser);
             newUser.setCurrentDirectory(rootDirectory);
             users.add(newUser);
@@ -63,13 +65,15 @@ public class VirtualFileSystem {
 
     //возвращает дирректорию из пути содержащую конечную либо текущую директорию пользователя
     public Directory getContainingDirectoryFromPath(String path, Directory currentDirectory) {
-        if (path.equals("C:"))
+        if (path.equals("C:")) {
             return rootDirectory;
+        }
 
         String[] pathDirectory = path.split(PATH_DEL);
         int pathLength = pathDirectory.length - 1;
-        if (!pathDirectory[0].equals("C:") && pathLength == 0)
+        if (!pathDirectory[0].equals("C:") && pathLength == 0) {
             return currentDirectory;
+        }
 
         return getDirectory(pathDirectory, pathLength);
     }
@@ -90,9 +94,11 @@ public class VirtualFileSystem {
 //возвращает поддиректорию из директории
     public Directory getDirectory(Directory dir, String name) {
 
-        for (int i = 0; i < dir.getNumberContainsDirectory(); i++)
-            if (dir.getNameDirectory(i).equals(name))
+        for (int i = 0; i < dir.getNumberContainsDirectory(); i++) {
+            if (dir.getNameDirectory(i).equals(name)) {
                 return dir.getDirectory(i);
+            }
+        }
 
         return null;
     }
@@ -110,8 +116,9 @@ public class VirtualFileSystem {
                     break;
                 } else isFindDirectory = false;
             }
-            if (!isFindDirectory)
+            if (!isFindDirectory) {
                 return null;
+            }
         }
         return returnDirectory;
     }
@@ -123,13 +130,17 @@ public class VirtualFileSystem {
 
     // папка или файл с таким именем уже существует
     public Boolean isExistObjectWithName(Directory dir, String nameObject) {
-        for (int i = 0; i < dir.getNumberContainsDirectory(); i++)
-            if (dir.getNameDirectory(i).equals(nameObject))
+        for (int i = 0; i < dir.getNumberContainsDirectory(); i++) {
+            if (dir.getNameDirectory(i).equals(nameObject)) {
                 return true;
+            }
+        }
 
-        for (int i = 0; i < dir.getNumberContainsFile(); i++)
-            if (dir.getNameFile(i).equals(nameObject))
+        for (int i = 0; i < dir.getNumberContainsFile(); i++) {
+            if (dir.getNameFile(i).equals(nameObject)) {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -137,17 +148,21 @@ public class VirtualFileSystem {
 
     //Возвращает директорию с именем name, из директории dir\
     public String checkPassRemoveDirectory(Directory removeDirectory, Directory currentDirectory) {
-        if (removeDirectory == null)
+        if (removeDirectory == null) {
             return ERROR_PATH;
+        }
 
-        if (removeDirectory == rootDirectory)
+        if (removeDirectory == rootDirectory) {
             return ERROR_DELETE_DISK_C;
+        }
 
-        if (removeDirectory == currentDirectory)
+        if (removeDirectory == currentDirectory) {
             return ERROR_DELETE_CURRENT_DIRECTORY;
+        }
 
-        if (!isNotUsersNow(removeDirectory))
+        if (!isNotUsersNow(removeDirectory)) {
             return ERROR_THIS_USER;
+        }
 
         return null;
     }
@@ -177,33 +192,44 @@ public class VirtualFileSystem {
 //папка содержит блокированные файлы
     private boolean isContainsLockedFile(Directory directory) {
 
-        for (int i = 0; i < directory.getNumberContainsFile(); i++)
-            if (!directory.isFileNotLock(i))
+        for (int i = 0; i < directory.getNumberContainsFile(); i++) {
+            if (!directory.isFileNotLock(i)) {
                 return true;
+            }
+        }
 
-        for (int i = 0; i < directory.getNumberContainsDirectory(); i++)
-            if(isContainsLockedFile(directory.getDirectory(i)))
+        for (int i = 0; i < directory.getNumberContainsDirectory(); i++) {
+            if (isContainsLockedFile(directory.getDirectory(i))) {
                 return true;
+            }
+        }
 
         return false;
     }
 
     public File getFile(Directory dir, String nameFile) {
-        if (dir.isNotContainsFile()) return null;
-        for (int i = 0; i < dir.getNumberContainsFile(); i++)
-            if (dir.getNameFile(i).equals(nameFile))
+        if (dir.isNotContainsFile()) {
+            return null;
+        }
+        for (int i = 0; i < dir.getNumberContainsFile(); i++) {
+            if (dir.getNameFile(i).equals(nameFile)) {
                 return dir.getFile(i);
+            }
+        }
 
         return null;
     }
 
     public boolean removeFile(Directory dir, String name) {
-        for (int i = 0; i < dir.getNumberContainsFile(); i++)
-            if (dir.getNameFile(i).equals(name))
-                if (dir.isFileNotLock(i)) {
-                    dir.removeFile(i);
-                    return true;
+        for (int i = 0; i < dir.getNumberContainsFile(); i++) {
+            if (dir.getNameFile(i).equals(name)) {
+                if (!dir.isFileNotLock(i)) {
+                    continue;
                 }
+                dir.removeFile(i);
+                return true;
+            }
+        }
         return false;
     }
 

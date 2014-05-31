@@ -122,8 +122,9 @@ public class Directory {
         Collections.sort(directory.getContainsFile(), sortFile);
 
         if (!directory.isNotContainsDirectory()) {
-            for (int i = 0; i < directory.getNumberContainsDirectory(); i++)
+            for (int i = 0; i < directory.getNumberContainsDirectory(); i++) {
                 sortDirectory(directory.getDirectory(i));
+            }
         }
     }
 }

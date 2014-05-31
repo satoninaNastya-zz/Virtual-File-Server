@@ -43,8 +43,9 @@ public class Client {
         } finally {
             try {
                 keyboardReader.close();
-                if (outputServer != null)
+                if (outputServer != null) {
                     outputServer.close();
+                }
             } catch (IOException io) {
                 io.printStackTrace();
             }
@@ -64,13 +65,16 @@ public class Client {
                 io.printStackTrace();
                 return false;
             }
-            if (connectString == null)
+            if (connectString == null) {
                 return false;
+            }
             String words[] = connectString.split(" ");
-            if (words.length != 3)
+            if (words.length != 3) {
                 return false;
-            if (words[0].compareToIgnoreCase("connect") != 0)
+            }
+            if (words[0].compareToIgnoreCase("connect") != 0) {
                 return false;
+            }
             ConnectCommand connectCommand = new ConnectCommand(words[1], words[2]);
 
             try {

@@ -10,16 +10,19 @@ public class MDCommand implements Command, Serializable {
 
     @Override
     public Response execute(VirtualFileSystem virtualFileSystem, ClientThread clientThread) {
-        if(clientThread.getUser()==null)
+        if(clientThread.getUser()==null) {
             return new ErrorResponse(clientThread, ERROR_NOT_CONNECT);
+        }
 
         Directory containingDirectory = virtualFileSystem.getContainingDirectoryFromPath(path, clientThread.getUser().getCurrentDirectory());
-        if (containingDirectory == null)
+        if (containingDirectory == null) {
             return new ErrorResponse(clientThread, ERROR_PATH);
+        }
 
         String nameNewDirectory = virtualFileSystem.getNewObjectName(path);
-        if (virtualFileSystem.isExistObjectWithName(containingDirectory, nameNewDirectory))
+        if (virtualFileSystem.isExistObjectWithName(containingDirectory, nameNewDirectory)) {
             return new ErrorResponse(clientThread, ERROR_NAME_EXIST);
+        }
 
         Directory newDirectory = new Directory(nameNewDirectory);
         containingDirectory.newDirectory(newDirectory);
