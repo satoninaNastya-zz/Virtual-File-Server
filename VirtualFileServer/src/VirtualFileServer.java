@@ -6,8 +6,8 @@ import java.util.Properties;
 
 public class VirtualFileServer {
 
-    private static ArrayList<ClientThread> listClient = new ArrayList<ClientThread>();
-    private static VirtualFileSystem virtualFileSystem = new VirtualFileSystem("C:", listClient);
+    private static final ArrayList<ClientThread> listClient = new ArrayList<ClientThread>();
+    private static final VirtualFileSystem virtualFileSystem = new VirtualFileSystem("C:", listClient);
 
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = null;
