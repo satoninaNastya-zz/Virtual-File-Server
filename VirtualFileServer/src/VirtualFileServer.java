@@ -9,48 +9,29 @@ public class VirtualFileServer {
     private static ArrayList<ClientThread> listClient = new ArrayList<ClientThread>();
     private static VirtualFileSystem virtualFileSystem = new VirtualFileSystem("C:", listClient);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
-        ServerSocket serverSocket;
-        serverSocket = null;
-        try {
-            int port = gerPortFromFile("config.properties");
-            if (port == -1) {
-                System.err.println("Error config file");
-                return;
-            }
-
-            try {
-                serverSocket = new ServerSocket(port);
-            } catch (IOException io) {
-                System.err.println("Error, server did not start, port already use");
-                return;
-            }
+        int port = getPortFromFile("config.properties");
+        if (port == -1) {
+            System.err.println("Error config file");
+            return;
+        }
+        ServerSocket serverSocket = new ServerSocket(port);
             System.out.println("Server run");
-
             while (true) {
                 try {
                     Socket socket = serverSocket.accept();
                     ClientThread client = new ClientThread(socket, virtualFileSystem);
                     listClient.add(client);
                 } catch (IOException io) {
-                    System.err.println("Error, server stop");
+                    System.err.println("Error connect");
                     break;
                 }
             }
-
-        } finally {
-            if (serverSocket != null) {
-                try {
-                    serverSocket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+            serverSocket.close();
     }
 
-    private static int gerPortFromFile(String configFile) {
+    private static int getPortFromFile(String configFile) {
         Properties properties = new Properties();
         InputStream inputStream = null;
         try {
