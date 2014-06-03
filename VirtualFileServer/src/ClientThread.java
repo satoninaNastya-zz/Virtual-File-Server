@@ -9,7 +9,7 @@ public class ClientThread extends Thread {
     private ObjectInputStream inputStream;
     private final VirtualFileSystem theVirtualFileSystem;
     private User newUser;
-    private CommandExecuteAndSendResponseClient commandExecuteAndSendResponseClient;
+
     private QuiteUserCommand quit = new QuiteUserCommand();
 
     public User getUser() {
@@ -25,11 +25,9 @@ public class ClientThread extends Thread {
             outputStreamSocket.println(message);
     }
 
-
     public ClientThread(Socket clientSocket, VirtualFileSystem virtualFileSystem) throws IOException {
         socket = clientSocket;
         theVirtualFileSystem = virtualFileSystem;
-        commandExecuteAndSendResponseClient = new CommandExecuteAndSendResponseClient(theVirtualFileSystem, this);
         start();
     }
 
@@ -42,23 +40,17 @@ public class ClientThread extends Thread {
                 if (inputStream == null) {
                     inputStream = new ObjectInputStream(socket.getInputStream());
                 }
-                try {
-                    Command newCommand = (Command) inputStream.readObject();
-                    synchronized (theVirtualFileSystem) {
-                        commandExecuteAndSendResponseClient.execute(newCommand);
-                    }
-                } catch (ClassNotFoundException e) {
-                    System.err.println("Receiving a command error");
-                    e.printStackTrace();
-                    break;
-
-                }
+                Command newCommand = (Command) inputStream.readObject();
+                Response responseClient = newCommand.execute(theVirtualFileSystem, this);
+                responseClient.send();
             }
-        } catch (IOException e) {
-            commandExecuteAndSendResponseClient.execute(quit);
+        } catch (Exception e) {
+
+            this.interrupt();
         } finally {
+            Response responseClient = quit.execute(theVirtualFileSystem, this);
+            responseClient.send();
             try {
-                commandExecuteAndSendResponseClient.execute(quit);
                 socket.close();
             } catch (IOException e) {
                 System.err.println("Socket not closed");
