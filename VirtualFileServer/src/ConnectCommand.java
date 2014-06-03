@@ -5,8 +5,6 @@ public class ConnectCommand implements Command, Serializable {
     private String address;
     private int port;
 
-
-
     public ConnectCommand(String addressServer, String userName) {
         this.user = new User(userName);
         String[] address = addressServer.split(":");
@@ -16,17 +14,9 @@ public class ConnectCommand implements Command, Serializable {
     }
 
 
-
     @Override
     public Response execute(VirtualFileSystem virtualFileSystem, ClientThread clientThread) {
-        if (virtualFileSystem.addNewUser(user)) {
-            clientThread.setUser(user);
-            int numberClientOnline = virtualFileSystem.getNumberClientOnline();
-            clientThread.getUser().setCurrentDirectory(virtualFileSystem.getRootDirectory());
-            return new ConnectResponse(clientThread, numberClientOnline);
-        } else
-            return new ErrorResponse(clientThread, ERROR_NAME_EXIST);
-
+        return virtualFileSystem.connectUser(user, clientThread);
     }
 
 

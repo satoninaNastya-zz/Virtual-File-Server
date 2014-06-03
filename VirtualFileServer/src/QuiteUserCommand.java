@@ -10,12 +10,7 @@ public class QuiteUserCommand implements Command, Serializable {
         if (clientThread.getUser() == null) {
             return new ErrorResponse(clientThread, ERROR_NOT_CONNECT);
         }
-        virtualFileSystem.removeUser(clientThread.getUser());
-        virtualFileSystem.removeClientThread(clientThread);
-        clientThread.setUser(null);
-        clientThread.interrupt();
-        return new QuitResponse(clientThread);
-
+        return virtualFileSystem.quitUser(clientThread);
     }
 
 }
