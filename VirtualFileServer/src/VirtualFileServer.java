@@ -10,25 +10,27 @@ public class VirtualFileServer {
     private static VirtualFileSystem virtualFileSystem = new VirtualFileSystem("C:", listClient);
 
     public static void main(String[] args) throws IOException {
-
-        int port = getPortFromFile("config.properties");
-        if (port == -1) {
-            System.err.println("Error config file");
-            return;
-        }
-        ServerSocket serverSocket = new ServerSocket(port);
+        ServerSocket serverSocket = null;
+        try {
+            int port = getPortFromFile("config.properties");
+            if (port == -1) {
+                System.err.println("Error config file");
+                return;
+            }
+            serverSocket = new ServerSocket(port);
             System.out.println("Server run");
             while (true) {
-                try {
-                    Socket socket = serverSocket.accept();
+                Socket socket = serverSocket.accept();
+                if (socket != null) {
                     ClientThread client = new ClientThread(socket, virtualFileSystem);
                     listClient.add(client);
-                } catch (IOException io) {
-                    System.err.println("Error connect");
-                    break;
                 }
             }
-            serverSocket.close();
+        } finally {
+            if (serverSocket != null) {
+                serverSocket.close();
+            }
+        }
     }
 
     private static int getPortFromFile(String configFile) {
