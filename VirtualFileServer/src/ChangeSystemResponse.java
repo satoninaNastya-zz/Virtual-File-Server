@@ -6,11 +6,11 @@ public class ChangeSystemResponse implements Response {
     private ClientThread userThread;
     private User userChange;
 
-    public ChangeSystemResponse(String changeString, ArrayList<ClientThread> clientsOnline, ClientThread clientThread, User user) {
+    public ChangeSystemResponse(String changeString, ArrayList<ClientThread> clientsOnline, ClientThread clientThread) {
         this.clientsThreadsOnline = clientsOnline;
         this.userThread = clientThread;
         this.changeString = changeString;
-        this.userChange = user;
+        this.userChange = clientThread.getUser();
     }
 
     @Override
