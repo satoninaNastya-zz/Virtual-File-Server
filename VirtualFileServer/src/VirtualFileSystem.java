@@ -71,7 +71,7 @@ public class VirtualFileSystem {
         return new ChangeSystemResponse(responseAllUser, getListClient(), clientThread);
     }
 
-    public synchronized Response changeDirectory(String path, ClientThread clientThread) {
+    public synchronized Response changeUserDirectory(String path, ClientThread clientThread) {
         Directory directory = getDirectoryFromPath(path, clientThread.getUser().getCurrentDirectory());
         if (directory == null) {
             return new ErrorResponse(clientThread, ERROR_PATH);
