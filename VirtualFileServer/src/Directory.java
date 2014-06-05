@@ -41,9 +41,10 @@ public class Directory {
         return usersThisNow.isEmpty();
     }
 
-    public void clear() {
+    public void clean() {
         containsDirectory.clear();
         containsFile.clear();
+        usersThisNow.clear();
     }
 
     public Directory(String name) {
@@ -52,6 +53,17 @@ public class Directory {
 
     public String getName() {
         return name;
+    }
+
+    public void changeDoubleName() {
+        String[] nameMas = this.name.split("_");
+        if (nameMas.length == 1) {
+            this.name = this.name + "_1";
+            return;
+        }
+        int num = Integer.parseInt(nameMas[1]);
+        num++;
+        this.name = nameMas[0] + "_" + num;
     }
 
     public String getNameDirectory(int i) {

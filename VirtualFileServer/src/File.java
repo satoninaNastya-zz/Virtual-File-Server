@@ -28,6 +28,17 @@ public class File {
         return true;
     }
 
+    public void changeDoubleName() {
+        String[] nameMas = this.name.split("_");
+        if (nameMas.length == 1) {
+            this.name = this.name + "_1";
+            return;
+        }
+        int num = Integer.parseInt(nameMas[1]);
+        num++;
+        this.name = nameMas[0] + "_" + num;
+    }
+
     public boolean unlockFile(String userName) {
         for (int i = 0; i < locks.size(); i++) {
             if (locks.get(i).deleteLockPass(userName)) {
