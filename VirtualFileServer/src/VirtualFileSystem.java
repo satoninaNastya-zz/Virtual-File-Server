@@ -11,22 +11,21 @@ public class VirtualFileSystem {
     private final static String ERROR_DELETE_DISK_C = "Error, you can not remove disk C";
     private final static String ERROR_DELETE_CURRENT_DIRECTORY = "Error, you can not remove current directory";
     private final static String ERROR_THIS_USER = "Error, in this directory are users ";
-    final static String ERROR_NOT_CONNECT = "Error, you not connected";
-    final static String ERROR_NAME_EXIST = "Error, this name is already exist";
+    private final static String ERROR_NAME_EXIST = "Error, this name is already exist";
 
-    final static String ERROR_FILE_NOT_FOUND = "Error, file not founded";
-    final static String ERROR_PATH = "Error, incorrect path";
-    final static String ERROR_SOURCE_PATH = "Error, incorrect source path";
-    final static String ERROR_DESTINATION_PATH = "Error, incorrect destination path";
+    private final static String ERROR_FILE_NOT_FOUND = "Error, file not founded";
+    private final static String ERROR_PATH = "Error, incorrect path";
+    private final static String ERROR_SOURCE_PATH = "Error, incorrect source path";
+    private final static String ERROR_DESTINATION_PATH = "Error, incorrect destination path";
 
-    final static String ERROR_FILE_LOCKED = "Error, file locked ";
-    final static String ERROR_DELETE_DIRECTORY_WITH_LOCK_FILE = "Error, you can not remove directory which contains locked file";
-    final static String ERROR_FILE_ALREADY_LOCKED = "Error, you already locked this file";
-    final static String ERROR_MOVE_FILE = "You can not move locked file";
-    final static String ERROR_UNLOCK = "Error, you can not unlock this file";
+    private final static String ERROR_FILE_LOCKED = "Error, file locked ";
+    private final static String ERROR_DELETE_DIRECTORY_WITH_LOCK_FILE = "Error, you can not remove directory which contains locked file";
+    private final static String ERROR_FILE_ALREADY_LOCKED = "Error, you already locked this file";
+    private final static String ERROR_MOVE_FILE = "You can not move locked file";
+    private final static String ERROR_UNLOCK = "Error, you can not unlock this file";
 
-    final static String ERROR_MOVE_DIRECTORY = "You can not move this directory";
-    final static String ERROR_DELETE_DIRECTORY = "Error, you can not remove directory containing other directories";
+    private final static String ERROR_MOVE_DIRECTORY = "You can not move this directory";
+    private final static String ERROR_DELETE_DIRECTORY = "Error, you can not remove directory containing other directories";
 
 
     public VirtualFileSystem(String rootDirectoryName, ArrayList<ClientThread> listClientOnline) {
@@ -179,6 +178,7 @@ public class VirtualFileSystem {
         }
     }
 
+
     public synchronized Response unLockFile(String path, ClientThread clientThread) {
         Directory containingDirectory = getContainingDirectoryFromPath(path, clientThread.getUser().getCurrentDirectory());
         if (containingDirectory == null) {
@@ -215,13 +215,17 @@ public class VirtualFileSystem {
         File sourceFile = getFile(sourceContainingDirectory, nameSourceObject);
         if (sourceFile == null) {
             Directory sourceDirectory = getDirectory(sourceContainingDirectory, nameSourceObject);
-
             String responseError = checkPassRemoveDirectory(sourceDirectory, clientThread.getUser().getCurrentDirectory());
+
             if (responseError != null) {
                 return new ErrorResponse(clientThread, responseError);
             }
 
+
             if (removeDirectory(sourceContainingDirectory, nameSourceObject)) {
+                while (isExistObjectWithName(destinationDirectory, sourceDirectory.getName())) {
+                    sourceDirectory.changeDoubleName();
+                }
                 destinationDirectory.newDirectory(sourceDirectory);
                 String responseAllUser = "move directory " + nameSourceObject;
                 return new ChangeSystemResponse(responseAllUser, getListClient(), clientThread);
@@ -230,6 +234,10 @@ public class VirtualFileSystem {
             }
         } else {
             if (removeFile(sourceContainingDirectory, nameSourceObject)) {
+
+                while (isExistObjectWithName(destinationDirectory, sourceFile.getName())) {
+                    sourceFile.changeDoubleName();
+                }
                 destinationDirectory.newFile(sourceFile);
                 String responseAllUser = "move file " + nameSourceObject;
                 return new ChangeSystemResponse(responseAllUser, getListClient(), clientThread);
@@ -258,11 +266,19 @@ public class VirtualFileSystem {
             if (sourceDirectory == null) {
                 return new ErrorResponse(clientThread, ERROR_SOURCE_PATH);
             }
-            destinationDirectory.newDirectory(copyDirectory(sourceDirectory));
+            Directory copyDirectory = copyDirectory(sourceDirectory);
+            while (isExistObjectWithName(destinationDirectory, copyDirectory.getName())) {
+                copyDirectory.changeDoubleName();
+            }
+            destinationDirectory.newDirectory(copyDirectory);
             String responseAllUser = "copy directory " + nameSourceObject;
             return new ChangeSystemResponse(responseAllUser, getListClient(), clientThread);
         } else {
-            destinationDirectory.newFile(copyFile(sourceFile));
+            File copyFile = copyFile(sourceFile);
+            while (isExistObjectWithName(destinationDirectory, copyFile.getName())) {
+                copyFile.changeDoubleName();
+            }
+            destinationDirectory.newFile(copyFile);
             String responseAllUser = "copy file " + nameSourceObject;
             return new ChangeSystemResponse(responseAllUser, getListClient(), clientThread);
         }
@@ -274,8 +290,6 @@ public class VirtualFileSystem {
     }
 
 
-
-
     private void removeUser(User user) {
         users.remove(user);
     }
@@ -284,7 +298,7 @@ public class VirtualFileSystem {
         clientsThreads.remove(client);
     }
 
-    private Directory getRootDirectory() {
+    public Directory getRootDirectory() {
         return rootDirectory;
     }
 
@@ -334,7 +348,7 @@ public class VirtualFileSystem {
     }
 
     //возвращает коннечную дирректорию из пути, либо текущую директорию пользователя
-    private Directory getDirectoryFromPath(String path, Directory currentDirectory) {
+    public Directory getDirectoryFromPath(String path, Directory currentDirectory) {
         String[] pathDirectory = path.split(PATH_DEL);
         int pathLength = pathDirectory.length;
 
@@ -379,6 +393,39 @@ public class VirtualFileSystem {
         return returnDirectory;
     }
 
+    public boolean isExistDirectoryFromPath(String path) {
+        String[] pathDirectory = path.split(PATH_DEL);
+        int num = pathDirectory.length;
+        boolean isFindDirectory = false;
+        Directory returnDirectory = rootDirectory;
+
+        for (int i = 1; i < num; i++) {
+            isFindDirectory = false;
+            for (int j = 0; j < returnDirectory.getNumberContainsDirectory(); j++) {
+                if (returnDirectory.getNameDirectory(j).equals(pathDirectory[i])) {
+                    returnDirectory = returnDirectory.getDirectory(j);
+                    isFindDirectory = true;
+                    break;
+                }
+            }
+        }
+        return isFindDirectory;
+    }
+
+    public boolean isExistFileFromPath(String path) {
+        String[] pathDirectory = path.split(PATH_DEL);
+        Directory containsDirectory = getDirectory(pathDirectory, pathDirectory.length - 1);
+        if (containsDirectory == null) {
+            return false;
+        }
+        for (int i = 0; i < containsDirectory.getNumberContainsFile(); i++) {
+            if (pathDirectory[pathDirectory.length - 1].equals(containsDirectory.getFile(i).getName()))
+                return true;
+        }
+        return false;
+    }
+
+
     private String getNewObjectName(String path) {
         String[] pathDirectory = path.split(PATH_DEL);
         return pathDirectory[pathDirectory.length - 1];
@@ -391,13 +438,11 @@ public class VirtualFileSystem {
                 return true;
             }
         }
-
         for (int i = 0; i < dir.getNumberContainsFile(); i++) {
             if (dir.getNameFile(i).equals(nameObject)) {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -452,7 +497,6 @@ public class VirtualFileSystem {
                 return true;
             }
         }
-
         for (int i = 0; i < directory.getNumberContainsDirectory(); i++) {
             if (isContainsLockedFile(directory.getDirectory(i))) {
                 return true;
@@ -499,10 +543,23 @@ public class VirtualFileSystem {
         return newDirectory;
     }
 
+    public void cleanSystem() {
+        users.clear();
+        rootDirectory.clean();
+    }
+
     private File copyFile(File file) {
         File newFile = new File(file.getName());
         newFile.cleanLock();
         return newFile;
+    }
+
+    public synchronized ArrayList<String> getUserNames() {
+        ArrayList<String> userNames = new ArrayList<String>();
+        for (User user : users) {
+            userNames.add(user.getName());
+        }
+        return userNames;
     }
 
     private void print(Directory dir, int level, ClientThread clientThread) {
