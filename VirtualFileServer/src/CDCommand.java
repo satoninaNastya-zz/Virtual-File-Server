@@ -14,7 +14,7 @@ public class CDCommand implements Command, Serializable {
 
             return new ErrorResponse(clientThread, ERROR_NOT_CONNECT);
         }
-        return virtualFileSystem.changeDirectory(path,clientThread);
+        return virtualFileSystem.changeUserDirectory(path, clientThread);
 
     }
 }
